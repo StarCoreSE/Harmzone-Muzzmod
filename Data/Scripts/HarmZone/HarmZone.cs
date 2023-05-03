@@ -93,7 +93,7 @@ namespace Klime.HarmZone
             if (beacon_block.CubeGrid.Physics != null)
             {
                 MyAPIGateway.Utilities.MessageEntered += Utilities_MessageEntered;
-                shield_mat = MyStringId.GetOrCompute("SafeZoneShield_Material");
+                shield_mat = MyStringId.GetOrCompute("Glass");
 
                 if (MyAPIGateway.Session.IsServer)
                 {
