@@ -56,7 +56,7 @@ namespace Klime.HarmZone
         allplayers = new List
         <IMyPlayer>
         ();
-        private bool sphere_visuals = true;
+        private bool sphere_visuals = false;
         private ushort netId = 42349;
         private bool is_shrinking = false;
         private float shrink_rate_per_tick = 0f;
@@ -93,7 +93,7 @@ namespace Klime.HarmZone
             if (beacon_block.CubeGrid.Physics != null)
             {
                 MyAPIGateway.Utilities.MessageEntered += Utilities_MessageEntered;
-                shield_mat = MyStringId.GetOrCompute("Glass");
+                shield_mat = MyStringId.GetOrCompute("SafeZoneShield_Material");
 
                 if (MyAPIGateway.Session.IsServer)
                 {
