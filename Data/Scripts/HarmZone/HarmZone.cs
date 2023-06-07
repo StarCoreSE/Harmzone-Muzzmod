@@ -126,11 +126,16 @@ namespace Klime.HarmZone
         {
             if (messageText.Contains("/harmdist"))
             {	
+		try
+                {
 				string[] tempdist = messageText.Split(' ');
 				MyAPIGateway.Utilities.ShowNotification("Harmsphere visuals changed to " + tempdist[1].ToString() + "m from center.");
 				harmdist = int.Parse(tempdist[1]);
                 //sphere_visuals = !sphere_visuals;
                 sendToOthers = false;
+				}
+				catch(Exception)
+				{}
             }
         }
 
