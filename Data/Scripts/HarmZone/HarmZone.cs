@@ -23,6 +23,8 @@ using VRage.ObjectBuilders;
 using VRage.Utils;
 using VRageMath;
 using BlendTypeEnum = VRageRender.MyBillboard.BlendTypeEnum;
+
+
 namespace Klime.HarmZone
 {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Beacon), false, "HarmBeacon")]
@@ -60,7 +62,7 @@ namespace Klime.HarmZone
         private ushort netId = 42349;
         private bool is_shrinking = false;
         private float shrink_rate_per_tick = 0f;
-
+		private int harmdist = 9500;
 
 
 
@@ -122,9 +124,12 @@ namespace Klime.HarmZone
 
         private void Utilities_MessageEntered(string messageText, ref bool sendToOthers)
         {
-            if (messageText == "/harmsphere")
-            {
-                sphere_visuals = !sphere_visuals;
+            if (messageText.Contains("/harmdist"))
+            {	
+				string[] tempdist = messageText.Split(' ');
+				MyAPIGateway.Utilities.ShowNotification("Harmsphere visuals changed to " + tempdist[1].ToString() + "m from center.");
+				harmdist = int.Parse(tempdist[1]);
+                //sphere_visuals = !sphere_visuals;
                 sendToOthers = false;
             }
         }
@@ -270,7 +275,7 @@ namespace Klime.HarmZone
                                     }
                                 }
                             });
-
+/*
                             bool hurtplayers = false;
 
                             if (hurtplayers) { 
@@ -294,37 +299,29 @@ namespace Klime.HarmZone
                                 MyAPIGateway.Multiplayer.SendMessageTo(netId, MyAPIGateway.Utilities.SerializeToBinary(sp), player.SteamUserId);
                             }
                             }
-
+*/
                         }
 
                         timer += 1;
                     }
 
-                    if (!MyAPIGateway.Utilities.IsDedicated)
-                    {
-                        if (MyAPIGateway.Session.Player != null && MyAPIGateway.Session.Camera != null)
-                        {
-                            var camMat = MyAPIGateway.Session.Camera.WorldMatrix;
+                    if (!MyAPIGateway.Utilities.IsDedicated) 
+{ 
+    if (MyAPIGateway.Session.Player != null && MyAPIGateway.Session.Camera != null) 
+    { 
+        var camMat = MyAPIGateway.Session.Camera.WorldMatrix; 
+        var distance = camMat.Translation.Length(); // Distance from 0,0,0
+        
+        // If the camera is within 5000 to 12500 meters of the origin, set sphere_visuals to true
+        bool sphere_visuals = distance >= harmdist && distance <= 12500;
 
-                            if (sphere_visuals)
-                            {
-                                worldmat = beacon_block.WorldMatrix;
-                                MySimpleObjectDraw.DrawTransparentSphere(
-                                    ref worldmat,
-                                    beacon_block.Radius,
-                                    ref sphere_col,
-                                    MySimpleObjectRasterizer.Solid,
-                                    35,
-                                    shield_mat,
-                                    null,
-                                    -1,
-                                    -1,
-                                    null,
-                                    BlendTypeEnum.PostPP,
-                                    1);
-                            }
-                        }
-                    }
+        if (sphere_visuals) 
+        { 
+            worldmat = beacon_block.WorldMatrix; 
+            MySimpleObjectDraw.DrawTransparentSphere( ref worldmat, beacon_block.Radius, ref sphere_col, MySimpleObjectRasterizer.Solid, 35, shield_mat, null, -1, -1, null, BlendTypeEnum.PostPP, 1); 
+        } 
+    } 
+}
                 }
             }
             catch (System.Exception e)
