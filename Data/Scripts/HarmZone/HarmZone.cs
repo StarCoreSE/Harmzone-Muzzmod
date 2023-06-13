@@ -62,7 +62,7 @@ namespace Klime.HarmZone
         private ushort netId = 42349;
         private bool is_shrinking = false;
         private float shrink_rate_per_tick = 0f;
-		private int harmdist = 9500;
+		private int harmdist = 7500;
 
 
 
@@ -95,6 +95,7 @@ namespace Klime.HarmZone
             if (beacon_block.CubeGrid.Physics != null)
             {
                 MyAPIGateway.Utilities.MessageEntered += Utilities_MessageEntered;
+                MyAPIGateway.Utilities.MessageEntered += Utilities_DepreciatedMessage;
                 shield_mat = MyStringId.GetOrCompute("SafeZoneShield_Material");
 
                 if (MyAPIGateway.Session.IsServer)
@@ -124,9 +125,10 @@ namespace Klime.HarmZone
 
         private void Utilities_MessageEntered(string messageText, ref bool sendToOthers)
         {
+
             if (messageText.Contains("/harmdist"))
             {	
-		try
+	        	try
                 {
 				string[] tempdist = messageText.Split(' ');
 				MyAPIGateway.Utilities.ShowNotification("Harmsphere visuals changed to " + tempdist[1].ToString() + "m from center.");
@@ -136,6 +138,16 @@ namespace Klime.HarmZone
 				}
 				catch(Exception)
 				{}
+            }
+        }
+
+        private void Utilities_DepreciatedMessage(string messageText, ref bool sendToOthers)
+        {
+            if (messageText.Contains("/harmsphere"))
+            {
+
+                MyAPIGateway.Utilities.ShowNotification("This command is depreciated. Use /harmdist DISTANCE (example: /harmdist 1000)", 10000);
+
             }
         }
 
@@ -337,6 +349,7 @@ namespace Klime.HarmZone
         public override void Close()
         {
             MyAPIGateway.Utilities.MessageEntered -= Utilities_MessageEntered;
+            MyAPIGateway.Utilities.MessageEntered -= Utilities_DepreciatedMessage;
             MyAPIGateway.Multiplayer.UnregisterSecureMessageHandler(netId, shrinkHandler);
         }
     }
