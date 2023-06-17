@@ -147,6 +147,7 @@ namespace Klime.HarmZone
             {
 
                 MyAPIGateway.Utilities.ShowNotification("This command is depreciated. Use /harmdist DISTANCE (example: /harmdist 1000)", 10000);
+                sendToOthers = false;
 
             }
         }
